@@ -1,1 +1,47 @@
-// Srijan, paste the main code here
+from tkinter import *
+import time
+
+import socket 
+c = socket.socket()
+c.connect(('10.202.5.26',65432))
+
+Height = 500
+Width= 500
+
+window = Tk()
+Xvel=0
+Yvel=0
+canvas= Canvas(window, width= Width, height= Height)
+canvas.pack()
+background_photo = PhotoImage(file='Space.png')
+background = canvas.create_image(0,0,image=background_photo,anchor=NW)
+
+
+photo_img1 = PhotoImage(file='alien.png')
+my_img = canvas.create_image(250,250,image= photo_img1,anchor= NW)
+
+
+image_width = photo_img1.width()
+image_height = photo_img1.height()
+
+while True:
+    coordinates = canvas.coords(my_img)
+    print(coordinates)
+    out = c.recv(1024).decode()
+    A = out.split(",") 
+    print(A)
+    if(float(A[0]) > 0.5):
+        Xvel = 10
+    elif(float(A[0]) < -0.5):
+        Xvel = -10
+    else:
+        Xvel=0
+        
+    #else:
+    #    Xvel = 0
+    canvas.move(my_img,Xvel,Yvel)
+    window.update()
+    time.sleep(0.01)
+
+window.mainloop()
+
